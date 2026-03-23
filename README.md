@@ -22,14 +22,14 @@ import {
   applyThemeConfig,
   createThemePreset,
   resolveTheme,
-  resolveThemeConfig
-} from '@codemonster-ru/vueforge-theme'
+  resolveThemeConfig,
+} from "@codemonster-ru/vueforge-theme";
 ```
-
-## Author
-
-[@KolesnikovKirill](https://github.com/kolesnikovKirill)
 
 ## License
 
 [MIT](LICENSE)
+
+## Author
+
+[@KolesnikovKirill](https://github.com/kolesnikovKirill)
