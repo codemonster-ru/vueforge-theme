@@ -11,7 +11,7 @@ Shared theme engine, token contract, and preset runtime for the VueForge ecosyst
 - theme token types
 - theme preset types
 - preset merging and resolution helpers
-- CSS variable serialization helpers
+- single and multi-config CSS variable serialization helpers
 - mode helpers for `light`, `dark`, and `system`
 - shared motion tokens
 
@@ -20,9 +20,11 @@ Shared theme engine, token contract, and preset runtime for the VueForge ecosyst
 ```ts
 import {
   applyThemeConfig,
+  applyThemeConfigs,
   createThemePreset,
   resolveTheme,
   resolveThemeConfig,
+  themeConfigsToCssText,
 } from "@codemonster-ru/vueforge-theme";
 ```
 

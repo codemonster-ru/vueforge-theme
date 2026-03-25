@@ -3,14 +3,16 @@
 import { afterEach, describe, expect, it } from "vitest";
 import {
   applyThemeConfig,
-  createThemePreset,
+  applyThemeConfigs,
   resolveThemeConfig,
   resolveThemePreset,
+  themeConfigsToCssText,
   themePresetToCssText,
   themeTokensToCssVars,
 } from "../src";
+import { createTestThemePreset } from "./helpers";
 
-const testPreset = createThemePreset({
+const testPreset = createTestThemePreset({
   name: "test-preset",
   tokens: {
     colorPrimary: "#0b63f6",
@@ -26,6 +28,7 @@ describe("theme runtime", () => {
   afterEach(() => {
     document.getElementById("vf-theme-preset")?.remove();
     document.getElementById("vf-test-theme")?.remove();
+    document.getElementById("vf-test-theme-2")?.remove();
   });
 
   it("serializes theme tokens to css variables", () => {
@@ -79,6 +82,35 @@ describe("theme runtime", () => {
     expect(cssText).toContain("--vf-color-primary: #ff8f70;");
   });
 
+  it("builds combined css text from multiple resolved configs", () => {
+    const configs = [
+      resolveThemeConfig({
+        preset: testPreset,
+        extend: {
+          colorPrimary: "#ff5a36",
+        },
+        options: {
+          styleId: "vf-test-theme",
+        },
+      }),
+      resolveThemeConfig({
+        preset: testPreset,
+        extend: {
+          colorSurface: "#f5f7fb",
+        },
+        options: {
+          prefix: "vf-layouts",
+          styleId: "vf-test-theme-2",
+        },
+      }),
+    ];
+
+    const cssText = themeConfigsToCssText(configs);
+
+    expect(cssText).toContain("--vf-color-primary: #ff5a36;");
+    expect(cssText).toContain("--vf-layouts-color-surface: #f5f7fb;");
+  });
+
   it("injects a style tag with resolved theme variables", () => {
     const style = applyThemeConfig(
       resolveThemeConfig({
@@ -95,5 +127,49 @@ describe("theme runtime", () => {
     expect(style.id).toBe("vf-test-theme");
     expect(style.textContent).toContain("--vf-color-primary: #ff5a36;");
     expect(document.getElementById("vf-test-theme")).toBe(style);
+  });
+
+  it("injects multiple style tags grouped by style id", () => {
+    const styles = applyThemeConfigs([
+      resolveThemeConfig({
+        preset: testPreset,
+        extend: {
+          colorPrimary: "#ff5a36",
+        },
+        options: {
+          styleId: "vf-test-theme",
+        },
+      }),
+      resolveThemeConfig({
+        preset: testPreset,
+        extend: {
+          colorSurface: "#f5f7fb",
+        },
+        options: {
+          prefix: "vf-layouts",
+          styleId: "vf-test-theme-2",
+        },
+      }),
+      resolveThemeConfig({
+        preset: testPreset,
+        dark: {
+          colorPrimary: "#ff8f70",
+        },
+        options: {
+          styleId: "vf-test-theme",
+        },
+      }),
+    ]);
+
+    expect(styles).toHaveLength(2);
+    expect(document.getElementById("vf-test-theme")?.textContent).toContain(
+      "--vf-color-primary: #ff5a36;",
+    );
+    expect(document.getElementById("vf-test-theme")?.textContent).toContain(
+      "--vf-color-primary: #ff8f70;",
+    );
+    expect(document.getElementById("vf-test-theme-2")?.textContent).toContain(
+      "--vf-layouts-color-surface: #f5f7fb;",
+    );
   });
 });

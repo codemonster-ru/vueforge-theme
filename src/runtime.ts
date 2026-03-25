@@ -112,20 +112,46 @@ export function themePresetToCssText(config: VfResolvedThemeConfig) {
   ].join("\n\n");
 }
 
+export function themeConfigsToCssText(configs: VfResolvedThemeConfig[]) {
+  return configs.map((config) => themePresetToCssText(config)).join("\n\n");
+}
+
+function ensureStyleElement(styleId: string, targetDocument: Document) {
+  return (
+    targetDocument.getElementById(styleId) ??
+    Object.assign(targetDocument.createElement("style"), { id: styleId })
+  );
+}
+
 export function applyThemeConfig(
   config: VfResolvedThemeConfig,
   targetDocument: Document = document,
 ) {
-  const styleId = config.options.styleId;
-  const style =
-    targetDocument.getElementById(styleId) ??
-    Object.assign(targetDocument.createElement("style"), { id: styleId });
+  return applyThemeConfigs([config], targetDocument)[0];
+}
 
-  style.textContent = themePresetToCssText(config);
+export function applyThemeConfigs(
+  configs: VfResolvedThemeConfig[],
+  targetDocument: Document = document,
+) {
+  const cssTextByStyleId = new Map<string, string[]>();
 
-  if (!style.parentNode) {
-    targetDocument.head.appendChild(style);
+  for (const config of configs) {
+    const styleId = config.options.styleId;
+    const cssTexts = cssTextByStyleId.get(styleId) ?? [];
+
+    cssTexts.push(themePresetToCssText(config));
+    cssTextByStyleId.set(styleId, cssTexts);
   }
 
-  return style;
+  return Array.from(cssTextByStyleId.entries()).map(([styleId, cssTexts]) => {
+    const style = ensureStyleElement(styleId, targetDocument);
+    style.textContent = cssTexts.join("\n\n");
+
+    if (!style.parentNode) {
+      targetDocument.head.appendChild(style);
+    }
+
+    return style;
+  });
 }

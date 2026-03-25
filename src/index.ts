@@ -7,10 +7,12 @@ export {
 } from "./mode.js";
 export {
   applyThemeConfig,
+  applyThemeConfigs,
   createThemePreset,
   resolveThemeConfig,
   resolveThemePreset,
   resolveThemePresetOptions,
+  themeConfigsToCssText,
   themePresetToCssText,
   themeTokensToCssVars,
 } from "./runtime.js";
