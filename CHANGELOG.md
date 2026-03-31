@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2026-03-31
+
+### Changed
+
+- clarified the package boundary in the README and documented that this package stays engine-only without a built-in `defaultThemePreset`
+
+### Removed
+
+- removed `textLineHeight`, `headingLineHeight`, and `tabsLineHeight` from the exported `VfThemeTokens` contract
+
 ## [1.1.0] - 2026-03-25
 
 ### Added

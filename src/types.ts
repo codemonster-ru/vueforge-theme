@@ -154,9 +154,6 @@ export interface VfThemeTokens {
   alertTitleFontSize: string;
   cardTitleFontSize: string;
   panelTitleFontSize: string;
-  textLineHeight: string;
-  headingLineHeight: string;
-  tabsLineHeight: string;
   motionDurationFast: string;
   motionDurationNormal: string;
   motionEaseStandard: string;
