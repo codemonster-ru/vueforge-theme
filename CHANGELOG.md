@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.2] - 2026-04-18
+
+### Changed
+
+- expanded serialization regression tests to cover both `breakpoint2xl` and `fontSize2xl` across `themeTokensToCssVars`, `themePresetToCssText`, and `applyThemeConfig`, including negative checks for legacy non-kebab keys
+
 ## [1.2.1] - 2026-04-18
 
 ### Fixed

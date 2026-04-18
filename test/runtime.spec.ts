@@ -10,6 +10,7 @@ import {
   themePresetToCssText,
   themeTokensToCssVars,
 } from "../src";
+import type { VfThemeTokens } from "../src";
 import { createTestThemePreset } from "./helpers";
 
 const testPreset = createTestThemePreset({
@@ -32,19 +33,24 @@ describe("theme runtime", () => {
   });
 
   it("serializes theme tokens to css variables", () => {
+    const tokensWithDigitSuffixes = {
+      colorPrimary: "#ff5a36",
+      controlHeightMd: "2.5rem",
+      breakpoint2xl: "1536px",
+      fontSize2xl: "1.125rem",
+    } as Record<string, string>;
+
     const cssVars = themeTokensToCssVars(
-      {
-        colorPrimary: "#ff5a36",
-        controlHeightMd: "2.5rem",
-        breakpoint2xl: "1536px",
-      },
+      tokensWithDigitSuffixes as Partial<VfThemeTokens>,
       "vf",
     );
 
     expect(cssVars["--vf-color-primary"]).toBe("#ff5a36");
     expect(cssVars["--vf-control-height-md"]).toBe("2.5rem");
     expect(cssVars["--vf-breakpoint-2xl"]).toBe("1536px");
+    expect(cssVars["--vf-font-size-2xl"]).toBe("1.125rem");
     expect(cssVars).not.toHaveProperty("--vf-breakpoint2xl");
+    expect(cssVars).not.toHaveProperty("--vf-font-size2xl");
   });
 
   it("resolves light and dark theme tokens from a custom preset", () => {
@@ -64,16 +70,21 @@ describe("theme runtime", () => {
   });
 
   it("builds light and dark css text from a resolved config", () => {
+    const lightExtend = {
+      colorPrimary: "#ff5a36",
+      breakpoint2xl: "1536px",
+      fontSize2xl: "1.125rem",
+    } as Record<string, string>;
+    const darkExtend = {
+      colorPrimary: "#ff8f70",
+      breakpoint2xl: "1600px",
+      fontSize2xl: "1.25rem",
+    } as Record<string, string>;
+
     const config = resolveThemeConfig({
       preset: testPreset,
-      extend: {
-        colorPrimary: "#ff5a36",
-        breakpoint2xl: "1536px",
-      },
-      dark: {
-        colorPrimary: "#ff8f70",
-        breakpoint2xl: "1600px",
-      },
+      extend: lightExtend as Partial<VfThemeTokens>,
+      dark: darkExtend as Partial<VfThemeTokens>,
       options: {
         styleId: "vf-test-theme",
       },
@@ -87,7 +98,10 @@ describe("theme runtime", () => {
     expect(cssText).toContain("--vf-color-primary: #ff8f70;");
     expect(cssText).toContain("--vf-breakpoint-2xl: 1536px;");
     expect(cssText).toContain("--vf-breakpoint-2xl: 1600px;");
+    expect(cssText).toContain("--vf-font-size-2xl: 1.125rem;");
+    expect(cssText).toContain("--vf-font-size-2xl: 1.25rem;");
     expect(cssText).not.toContain("--vf-breakpoint2xl");
+    expect(cssText).not.toContain("--vf-font-size2xl");
   });
 
   it("builds combined css text from multiple resolved configs", () => {
@@ -120,13 +134,16 @@ describe("theme runtime", () => {
   });
 
   it("injects a style tag with resolved theme variables", () => {
+    const lightExtend = {
+      colorPrimary: "#ff5a36",
+      breakpoint2xl: "1536px",
+      fontSize2xl: "1.125rem",
+    } as Record<string, string>;
+
     const style = applyThemeConfig(
       resolveThemeConfig({
         preset: testPreset,
-        extend: {
-          colorPrimary: "#ff5a36",
-          breakpoint2xl: "1536px",
-        },
+        extend: lightExtend as Partial<VfThemeTokens>,
         options: {
           styleId: "vf-test-theme",
         },
@@ -136,7 +153,9 @@ describe("theme runtime", () => {
     expect(style.id).toBe("vf-test-theme");
     expect(style.textContent).toContain("--vf-color-primary: #ff5a36;");
     expect(style.textContent).toContain("--vf-breakpoint-2xl: 1536px;");
+    expect(style.textContent).toContain("--vf-font-size-2xl: 1.125rem;");
     expect(style.textContent).not.toContain("--vf-breakpoint2xl");
+    expect(style.textContent).not.toContain("--vf-font-size2xl");
     expect(document.getElementById("vf-test-theme")).toBe(style);
   });
 
