@@ -42,11 +42,10 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
           registry-url: "https://registry.npmjs.org"
 
-      - run: npm install -g npm@latest
       - run: npm -v
       - run: npm ci
       - run: npm run lint
