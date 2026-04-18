@@ -14,7 +14,9 @@ const DEFAULT_THEME_STYLE_ID = "vf-theme-preset";
 const DEFAULT_THEME_ROOT_SELECTOR = ":root";
 
 function camelToKebab(value: string) {
-  return value.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
+  return value
+    .replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`)
+    .replace(/([a-z])(\d)/g, "$1-$2");
 }
 
 function mergeThemeTokens(

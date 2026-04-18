@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2026-04-18
+
+### Fixed
+
+- corrected CSS variable serialization for tokens containing digit suffixes: `breakpoint2xl` now becomes `--vf-breakpoint-2xl` (instead of `--vf-breakpoint2xl`)
+
+### Changed
+
+- extended runtime tests to cover positive and negative serialization checks for digit-boundary token names in `themeTokensToCssVars`, `themePresetToCssText`, and `applyThemeConfig`
+
 ## [1.2.0] - 2026-03-31
 
 ### Changed

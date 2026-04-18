@@ -36,12 +36,15 @@ describe("theme runtime", () => {
       {
         colorPrimary: "#ff5a36",
         controlHeightMd: "2.5rem",
+        breakpoint2xl: "1536px",
       },
       "vf",
     );
 
     expect(cssVars["--vf-color-primary"]).toBe("#ff5a36");
     expect(cssVars["--vf-control-height-md"]).toBe("2.5rem");
+    expect(cssVars["--vf-breakpoint-2xl"]).toBe("1536px");
+    expect(cssVars).not.toHaveProperty("--vf-breakpoint2xl");
   });
 
   it("resolves light and dark theme tokens from a custom preset", () => {
@@ -65,9 +68,11 @@ describe("theme runtime", () => {
       preset: testPreset,
       extend: {
         colorPrimary: "#ff5a36",
+        breakpoint2xl: "1536px",
       },
       dark: {
         colorPrimary: "#ff8f70",
+        breakpoint2xl: "1600px",
       },
       options: {
         styleId: "vf-test-theme",
@@ -80,6 +85,9 @@ describe("theme runtime", () => {
     expect(cssText).toContain(":root[data-vf-theme='dark']");
     expect(cssText).toContain("--vf-color-primary: #ff5a36;");
     expect(cssText).toContain("--vf-color-primary: #ff8f70;");
+    expect(cssText).toContain("--vf-breakpoint-2xl: 1536px;");
+    expect(cssText).toContain("--vf-breakpoint-2xl: 1600px;");
+    expect(cssText).not.toContain("--vf-breakpoint2xl");
   });
 
   it("builds combined css text from multiple resolved configs", () => {
@@ -117,6 +125,7 @@ describe("theme runtime", () => {
         preset: testPreset,
         extend: {
           colorPrimary: "#ff5a36",
+          breakpoint2xl: "1536px",
         },
         options: {
           styleId: "vf-test-theme",
@@ -126,6 +135,8 @@ describe("theme runtime", () => {
 
     expect(style.id).toBe("vf-test-theme");
     expect(style.textContent).toContain("--vf-color-primary: #ff5a36;");
+    expect(style.textContent).toContain("--vf-breakpoint-2xl: 1536px;");
+    expect(style.textContent).not.toContain("--vf-breakpoint2xl");
     expect(document.getElementById("vf-test-theme")).toBe(style);
   });
 
